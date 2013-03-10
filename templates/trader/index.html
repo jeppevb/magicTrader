@@ -32,7 +32,7 @@
 					function() {
 						var mycardname = $("#newBinderCardNameInput").val();
 						$.ajax({
-							url : 'http://magictrader.kyomu.dk/card/' + $("#newBinderCardNameInput").val(),
+							url : 'http://magictrader.kyomu.dk/gathercard/' + $("#newBinderCardNameInput").val(),
 							dataType : 'json',
 							statusCode : {
 								404 : function() {toastr.error("Unable to find/add " + mycardname);} 
