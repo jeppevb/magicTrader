@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+		<script src="{{STATIC_URL}}jquery.ddslick.min.js"></script>
 		<link href="{{STATIC_URL}}toastr/toastr.css" rel="stylesheet"/>
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
 		<script type="application/javascript">
@@ -25,7 +26,12 @@
 						}
 					},
 					select: function( event, ui ) {
-						//populate fields
+						$.ajax({
+							url : 'http://magictrader.kyomu.dk/card/' + ui.item.value,
+							dataType : 'json'
+						}).success(function(data){
+							setCurrentCard(data);
+						});
 					}
 				});
 				$("#addBinderCardButton").click(
@@ -44,20 +50,41 @@
 					}
 				);
 			});
+			function setCurrentCard(carddata){
+				$('#newBinderCardName').text(carddata['name']);
+				$('#newBinderCardSet').empty();
+				var size = 0;
+				for(k in carddata['sets']){
+					if (carddata['sets'].hasOwnProperty(k)) size++;
+					if (size > 1)
+						break; 
+				}
+				if (size == 1){
+					for(k in carddata['sets']){
+						$('#newBinderCardSet').append('<div class="dd-select" style="width: 200px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
+					}
+				}else{	
+					$('#newBinderCardSet').append('<select id="newBinderCardSetDropdown"></select>')
+					for(k in carddata['sets']){
+						$('#newBinderCardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
+					};
+					$('#newBinderCardSetDropdown').ddslick({height: 500, width: 200});
+				}
+			}
 			
 		</script>
 	</head>
 	<body>
 		<div>
 			<h2>Trade Binder:</h2>
-			<table>
-				<tr>
-					<td id="newBinderCardImage" class="imagecell"/><td id="newBinderCardName" class="ui-widget">
-					<input id="newBinderCardNameInput" />
-					<a href="#" id="addBinderCardButton">Find this card on gather so i can trade it</a></td>
-					<td id="newBinderCardAmount" /><td id="newBinderCardFoil" /><td><a onclick="addBinderCard()" href="#">Add card to trade binder</a></td>
-				</tr>
-			</table>
+					<div class="ui-widget"><input id="newBinderCardNameInput" /></div>
+					<div><a href="#" id="addBinderCardButton">Find this card on gather so i can trade it</a></div>
+					<div id="newBinderCardImage"></div>
+					<div id="newBinderCardSet"></div>
+					<div id="newBinderCardName"></div>
+					<div id="newBinderCardAmount"></div>
+					<div id="newBinderCardFoil"></div>
+					<div><a onclick="addBinderCard()" href="#">Add card to trade binder</a></div>
 		</div>
 		<hr />
 		<div>

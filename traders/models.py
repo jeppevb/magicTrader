@@ -4,8 +4,6 @@ from django.db import models
 class Set(models.Model):
     name = models.CharField(max_length=255, unique=True)
     shortname = models.CharField(max_length=3, unique=True)
-    def imagetag(self):
-        return u'<img src="' + STATIC_ROOT + 'sets/' + self.shortname + u'.jpg" />'
     def __unicode__(self):
         return name
     

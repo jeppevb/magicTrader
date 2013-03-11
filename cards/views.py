@@ -14,9 +14,17 @@ import xml.etree.ElementTree as ET
 def cardList(request, prefix):
     return HttpResponse(JSON.dumps(list(Card.objects.filter(name__icontains=prefix).values_list('name', flat=True))))
 
-def cardList(request, prefix):
-    return HttpResponse(JSON.dumps(list(Card.objects.filter(name__icontains=prefix).values_list('name', flat=True))))
-
+def getCard(request, cardname):
+    c = Card.objects.get(name=cardname)
+    result = {}
+    result["name"] = c.name
+    result["sets"] = {}
+    cardsets = CardSet.objects.filter(card=c)
+    for cs in cardsets:
+        result['sets'][cs.set.name] = {}
+        result['sets'][cs.set.name]['cardimages'] = list(cs.cardsetimages.values_list('cardid', flat=True))
+        result['sets'][cs.set.name]['short'] = cs.set.shortname
+    return HttpResponse(JSON.dumps(result))
 
 #get card and set from gatherer
 def gatherCard(request, cardname):
@@ -53,7 +61,6 @@ def gatherCard(request, cardname):
         otherexp = re.search('ctl00_ctl00_ctl00_MainContent_SubContent_SubContent_otherSetsValue">\s+(.+?)</div>', html, re.DOTALL).group(1)
         pattern = '<a href="Details\.aspx\?multiverseid=([0-9]+)"><img title="(.+?) \(.+?\)" src="\.\./\.\./Handlers/Image\.ashx\?type=symbol&amp;set=(.+?)&amp;size=small&amp'
         imageregexp = re.compile(pattern, re.DOTALL)
-        
         for m in imageregexp.finditer(otherexp):
             bindCardSetImage(realCardName, m.group(2), m.group(3), m.group(1))
     except AttributeError as e: 
@@ -84,7 +91,7 @@ def bindCardSetImage(cardname, setname, setshort, imageid):
     
 def downloadSet(shortname):
     if not(os.path.exists(settings.MEDIA_ROOT + 'sets/' + shortname + '.jpg')):
-        f = urllib2.urlopen('http://gatherer.wizards.com/Handlers/Image.ashx?type=symbol&set=' + shortname + '&size=large&rarity=C')
+        f = urllib2.urlopen('http://gatherer.wizards.com/Handlers/Image.ashx?type=symbol&set=' + shortname + '&size=medium&rarity=C')
         data = f.read()
         with open(settings.MEDIA_ROOT + 'sets/' + shortname + '.jpg', "wb") as code:
             code.write(data)
@@ -94,4 +101,11 @@ def downloadCard(cardid):
         f = urllib2.urlopen('http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=' + cardid + '&type=card')
         data = f.read()
         with open(settings.MEDIA_ROOT + 'cards/' + cardid + '.jpg', "wb") as code:
-            code.write(data)    
+            code.write(data)
+            
+def fixImages(request):
+    for s in Set.objects.all():
+        thread.start_new_thread(downloadSet, (s.shortname,))     
+    for c in CardSetImage.objects.all():
+        thread.start_new_thread(downloadCard, (c.cardid,))
+    return HttpResponse('OK')     

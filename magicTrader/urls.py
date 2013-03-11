@@ -11,7 +11,9 @@ from cards import views
 urlpatterns = patterns('',
     url(r'^dispatch/$', 'traders.views.traderDispatcher', name='traderDispatcher'),
     url(r'^gathercard/(.+)[/$]', 'cards.views.gatherCard', name='gather card'),
+    url(r'^card/(.+)[/$]', 'cards.views.getCard', name='get card'),
     url(r'^cards/(.*?)[/$]', 'cards.views.cardList', name='list cards'),
+    url(r'^fiximages[/$]', 'cards.views.fixImages', name='fix cards and sets'),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
