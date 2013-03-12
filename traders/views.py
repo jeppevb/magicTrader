@@ -9,13 +9,13 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def traderDispatcher(request):
     if request.method == 'GET':
-        return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=http://apps.facebook.com/magictrade";</script>')            
+        return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=https://apps.facebook.com/magictrade";</script>')            
     elif request.method == 'POST':
         signature = base64.urlsafe_b64decode((request.POST['signed_request'].partition('.')[0] + '==').encode("utf-8"))
         rawdata = request.POST['signed_request'].partition('.')[2]
         jsondata = JSON.loads(base64.urlsafe_b64decode((rawdata + '==').encode("utf-8")))
         if 'user_id' not in jsondata:
-            return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=http://apps.facebook.com/magictrade";</script>')
+            return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=https://apps.facebook.com/magictrade";</script>')
         if jsondata['algorithm'].upper() != 'HMAC-SHA256':
             return HttpResponseNotFound('Unknown algorithm. Expected HMAC-SHA256')
         else:
