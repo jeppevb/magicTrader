@@ -9,9 +9,19 @@
 		<script src="{{STATIC_URL}}jquery.ddslick.min.js"></script>
 		<link href="{{STATIC_URL}}toastr/toastr.css" rel="stylesheet"/>
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
+		<style>
+			.dd-select, .dd-selected, .dd-options, .dd-selected-text{
+				font-size: small;
+			}
+			.dd-selected-image{
+				max-width: 223px;
+			}
+			
+		</style>
 		<script type="application/javascript">
+			var carddata;
 			$(function() {
-				$("#newBinderCardNameInput").autocomplete({
+				$("#cardNameInput").autocomplete({
 					source : function(request, response) {
 						$.ajax({
 							url : 'http://magictrader.kyomu.dk/cards/' + request.term,
@@ -26,33 +36,38 @@
 						}
 					},
 					select: function( event, ui ) {
+						$('#gatherCardButton').hide(100);
 						$.ajax({
 							url : 'http://magictrader.kyomu.dk/card/' + ui.item.value,
 							dataType : 'json'
 						}).success(function(data){
-							setCurrentCard(data);
+							carddata = data;
+							setCurrentSet();
 						});
+					},
+					change: function (event, ui){
+						$('#gatherCardButton').show(50);
 					}
 				});
-				$("#addBinderCardButton").click(
+				$("#gatherCardButton").click(
 					function() {
-						var mycardname = $("#newBinderCardNameInput").val();
+						var mycardname = $("#cardNameInput").val();
 						$.ajax({
-							url : 'http://magictrader.kyomu.dk/gathercard/' + $("#newBinderCardNameInput").val(),
+							url : 'http://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
 							dataType : 'json',
 							statusCode : {
 								404 : function() {toastr.error("Unable to find/add " + mycardname);} 
 							}
 						}).success(function(data){
 							toastr.success("Added " + data + " to database");
-							$("#newBinderCardNameInput" ).autocomplete("search");
+							$("#cardNameInput" ).autocomplete("search");
 						});
 					}
 				);
 			});
-			function setCurrentCard(carddata){
-				$('#newBinderCardName').text(carddata['name']);
-				$('#newBinderCardSet').empty();
+			
+			function setCurrentSet(){
+				$('#cardSet').empty();
 				var size = 0;
 				for(k in carddata['sets']){
 					if (carddata['sets'].hasOwnProperty(k)) size++;
@@ -61,29 +76,55 @@
 				}
 				if (size == 1){
 					for(k in carddata['sets']){
-						$('#newBinderCardSet').append('<div class="dd-select" style="width: 200px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
+						$('#cardSet').append('<div style="width: 200px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
 					}
 				}else{	
-					$('#newBinderCardSet').append('<select id="newBinderCardSetDropdown"></select>')
+					$('#cardSet').append('<select id="cardSetDropdown"></select>')
 					for(k in carddata['sets']){
-						$('#newBinderCardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
+						$('#cardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
 					};
-					$('#newBinderCardSetDropdown').ddslick({height: 500, width: 200});
+					$('#cardSetDropdown').ddslick({height: 500, width: 300, onSelected: function(){setCurrentImage();}});
+					setCurrentImage();
 				}
 			}
+			
+			function setCurrentImage(){
+				var size = 0;
+				$('#cardImage').empty();
+				var currentset = $('#cardSetDropdown').data('ddslick').selectedData.value;
+				for(k in carddata['sets'][currentset]['cardimages']){
+					if (carddata['sets'][currentset]['cardimages'].hasOwnProperty(k)) size++;
+					if (size > 1)
+						break; 
+				}
+				if (size == 1){
+					for(k in carddata['sets'][currentset]['cardimages']){
+						$('#cardImage').append('<div class="dd-select" style="width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
+					}
+				}else{	
+					$('#cardImage').append('<select id="cardImageDropdown"></select>')
+					for(k in carddata['sets'][currentset]['cardimages']){
+						console.log(k);
+						$('#cardImageDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></option>');
+					};
+					$('#cardImageDropdown').ddslick({height: 500, width: 300});
+				}
+
+			}
+			
+			
 			
 		</script>
 	</head>
 	<body>
 		<div>
 			<h2>Trade Binder:</h2>
-					<div class="ui-widget"><input id="newBinderCardNameInput" /></div>
-					<div><a href="#" id="addBinderCardButton">Find this card on gather so i can trade it</a></div>
-					<div id="newBinderCardImage"></div>
-					<div id="newBinderCardSet"></div>
-					<div id="newBinderCardName"></div>
-					<div id="newBinderCardAmount"></div>
-					<div id="newBinderCardFoil"></div>
+					<div class="ui-widget"><input id="cardNameInput" /></div>
+					<div><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></div>
+					<div id="cardImage"></div>
+					<div id="cardSet"></div>
+					<div id="cardAmount"></div>
+					<div id="cardFoil"></div>
 					<div><a onclick="addBinderCard()" href="#">Add card to trade binder</a></div>
 		</div>
 		<hr />
