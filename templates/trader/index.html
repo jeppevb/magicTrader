@@ -9,103 +9,9 @@
 		<script src="{{STATIC_URL}}jqueryui/jquery.ddslick.min.js"></script>
 		<link href="{{STATIC_URL}}toastr/toastr.css" rel="stylesheet"/>
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
-		<style>
-			.dd-select, .dd-selected, .dd-options, .dd-selected-text {
-				font-size: small;
-			}
-			.dd-selected-image {
-				max-width: 223px;
-			}
-			input {
-				width: 300px;
-			}
-
-		</style>
-	</head>
-	<body>
-		<div>
-			<h2>Trade Binder:</h2>
-			<table>
-				<tr>
-					<td>
-					<div class="ui-widget">
-						<input id="cardNameInput" />
-					</div></td><td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
-				</tr>
-				<tr>
-					<td><div id="cardImage"></div></td>
-					<td><div id="cardAmount"></div></td>
-
-				</tr>
-			</table>
-			<div id="cardSet"></div>
-			<div>
-				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
-			</div>
-		</div>
-		<hr />
-		<div>
-			<h2>Communities:</h2>
-			<ul>
-				<li></li>
-			</ul>
-			<a href="#">Join community</a>
-		</div>
 		<script type="text/javascript">
 			var carddata;
-			$("#cardNameInput").autocomplete({
-				source : function(request, response) {
-					$.ajax({
-						url : 'https://magictrader.kyomu.dk/cards/' + request.term,
-						dataType : 'json'
-					}).success(function(data) {
-						response(data);
-					});
-				},
-				response : function(event, ui) {
-					if (ui.content.length < 1) {
-						$("#cardNameInput").keypress(function(event) {
-							if (event.which == 13) {
-								$("#gatherCardButton").click();
-							}
-						});
-					} else {
-						$("#cardNameInput").unbind('keypress');
-					}
-				},
-				select : function(event, ui) {
-					$('#gatherCardButton').hide(100);
-					$.ajax({
-						url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
-						dataType : 'json'
-					}).success(function(data) {
-						carddata = data;
-						setCurrentSet();
-					});
-				},
-				change : function(event, ui) {
-					$('#gatherCardButton').show(50);
-				}
-			});
-
-			$("#gatherCardButton").click(function() {
-				var mycardname = $("#cardNameInput").val();
-				$.ajax({
-					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
-					dataType : 'json',
-					statusCode : {
-						404 : function() {
-							toastr.error("Unable to find/add " + mycardname);
-						},
-						302 : function() {
-						}
-					}
-				}).success(function(data) {
-					toastr.success("Added " + data + " to database");
-					$("#cardNameInput").autocomplete("search");
-				});
-			});
-
+			
 			function setCurrentSet() {
 				$('#cardSet').empty();
 				var size = 0;
@@ -162,6 +68,97 @@
 					});
 				}
 			}
+		</script>
+		<style>
+			.dd-select, .dd-selected, .dd-options, .dd-selected-text {
+				font-size: small;
+			}
+			.dd-selected-image {
+				max-width: 223px;
+			}
+			input {
+				width: 300px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div>
+			<h2>Trade Binder:</h2>
+			<table>
+				<tr>
+					<td class="ui-widget">
+						<input id="cardNameInput" />
+					</td>
+					<td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
+				</tr>
+				<tr>
+					<td><div id="cardImage"></div></td>
+					<td><div id="cardAmount"></div></td>
+
+				</tr>
+			</table>
+			<div id="cardSet"></div>
+			<div>
+				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
+			</div>
+		</div>
+		<hr />
+		<div>
+			<h2>Communities:</h2>
+			<ul>
+				<li></li>
+			</ul>
+			<a href="#">Join community</a>
+		</div>
+		<script type="text/javascript">
+			$("#cardNameInput").autocomplete({
+				source : function(request, response) {
+					$.ajax({
+						url : 'https://magictrader.kyomu.dk/cards/' + request.term,
+						dataType : 'json'
+					}).success(function(data) {
+						response(data);
+					});
+				},
+				response : function(event, ui) {
+					$("#cardNameInput").unbind('keypress');
+					if (ui.content.length < 1) {
+						$("#cardNameInput").keypress(function(event) {
+							if (event.which == 13) {
+								$("#gatherCardButton").click();
+							}
+						});
+					}
+				},
+				select : function(event, ui) {
+					$.ajax({
+						url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
+						dataType : 'json'
+					}).success(function(data) {
+						carddata = data;
+						setCurrentSet();
+					});
+				}
+			});
+
+			$("#gatherCardButton").click(function() {
+				var mycardname = $("#cardNameInput").val();
+				$.ajax({
+					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
+					dataType : 'json',
+					statusCode : {
+						404 : function() {
+							toastr.error("Unable to find/add " + mycardname);
+						},
+						302 : function() {
+						}
+					}
+				}).success(function(data) {
+					toastr.success("Added " + data + " to database");
+					$("#cardNameInput").autocomplete("search");
+				});
+			});
 		</script>
 	</body>
 </html>
