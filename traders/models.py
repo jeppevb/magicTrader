@@ -37,7 +37,8 @@ class BinderCard(models.Model):
     isFoil = models.BooleanField()
     preferedset = models.ForeignKey(Set)
     preferedimage = models.ForeignKey(CardSetImage)
-
+    comment = models.TextField()
+    
 class WishListCard(models.Model):
     trader = models.ForeignKey(Trader)
     card = models.ForeignKey(Card)
@@ -45,4 +46,5 @@ class WishListCard(models.Model):
     isFoil = models.BooleanField()
     preferedset = models.ForeignKey(Set)
     preferedimage = models.ForeignKey(CardSetImage)
-    
+    comment = models.TextField()
+
