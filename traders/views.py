@@ -7,7 +7,7 @@ from models import Trader, BinderCard, WishListCard, Card
 from django.views.decorators.csrf import csrf_exempt                                          
 
 @csrf_exempt
-def traderDispatcher(request, method = None):
+def traderDispatcher(request, method = None, data = None):
     if request.method == 'GET':
         return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=https://apps.facebook.com/magictrade";</script>')            
     elif request.method == 'POST':
@@ -22,6 +22,8 @@ def traderDispatcher(request, method = None):
             expectedSignature = hmac.new('cbf6e8d1d36a7a252dfd425c1610a868',rawdata,hashlib.sha256).digest()
             if signature != expectedSignature:
                 return HttpResponseNotFound('Wrong')
+        if method = 'updatebinder' && data != None:
+            updateBinder()
         return traderIndex(request, jsondata['user_id'])
     
 def traderIndex(request, userid):
@@ -30,7 +32,7 @@ def traderIndex(request, userid):
         t = Trader(fbuserid=userid)
         t.save()
     trader = Trader.objects.get(fbuserid=userid)
-    rq = RequestContext(request, {'trader':t.id})
+    rq = RequestContext(request, {'signed_request':request.POST['signed_request']})
     return HttpResponse(template.render(rq))
     
 def traderGet(request, userid, entity):
