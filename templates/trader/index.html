@@ -94,7 +94,12 @@
 			function setCurrentImage(){
 				var size = 0;
 				$('#cardImage').empty();
-				var currentset = $('#cardSetDropdown').data('ddslick').selectedData.value;
+				var currentset;
+				if ($('#cardSetDropdown').val() != null){
+					currentset = $('#cardSetDropdown').data('ddslick').selectedData.value;				
+				}else{
+					currentset = carddata['sets'][key(carddata['sets'])];
+				}
 				for(k in carddata['sets'][currentset]['cardimages']){
 					if (carddata['sets'][currentset]['cardimages'].hasOwnProperty(k)) size++;
 					if (size > 1)
