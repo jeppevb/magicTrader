@@ -134,14 +134,14 @@
 					$.ajax({
 						url : 'https://magictrader.kyomu.dk/cards/' + request.term,
 						dataType : 'json'
-					}).success(function(data) {
+					}).done(function(data) {
 						response(data);
 					});
 				},
 				response : function(event, ui) {
 					$("#cardNameInput").keypress(function(event) {
 						if (event.which == 13) {
-							$("#gatherCardButton").click();
+							gatherCard();
 						}
 					});
 				},
@@ -149,7 +149,7 @@
 					$.ajax({
 						url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
 						dataType : 'json'
-					}).success(function(data) {
+					}).done(function(data) {
 						carddata = data;
 						setCurrentSet();
 					});
