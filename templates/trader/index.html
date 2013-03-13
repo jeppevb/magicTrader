@@ -80,26 +80,21 @@
 				if (size == 1){
 					for(k in carddata['sets']){
 						$('#cardSet').append('<div style="width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
+						setCurrentImage(k);
 					}
 				}else{	
 					$('#cardSet').append('<select id="cardSetDropdown"></select>')
 					for(k in carddata['sets']){
 						$('#cardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
 					};
-					$('#cardSetDropdown').ddslick({height: 500, width: 300, onSelected: function(){setCurrentImage();}});
+					$('#cardSetDropdown').ddslick({height: 500, width: 300, onSelected: function(){setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);}});
 				}
-				setCurrentImage();
+				
 			}
 			
-			function setCurrentImage(){
+			function setCurrentImage(currentset){
 				var size = 0;
 				$('#cardImage').empty();
-				var currentset;
-				if ($('#cardSetDropdown').val() != null){
-					currentset = $('#cardSetDropdown').data('ddslick').selectedData.value;				
-				}else{
-					currentset = carddata['sets'][key(carddata['sets'])];
-				}
 				for(k in carddata['sets'][currentset]['cardimages']){
 					if (carddata['sets'][currentset]['cardimages'].hasOwnProperty(k)) size++;
 					if (size > 1)
