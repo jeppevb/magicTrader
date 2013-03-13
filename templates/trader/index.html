@@ -23,7 +23,7 @@
 						},
 						302 : function() {}
 					}
-				}).success(function(data) {
+				}).done(function(data) {
 					toastr.success("Added " + data + " to database");
 					$("#cardNameInput").autocomplete("search");
 				});
