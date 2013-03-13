@@ -41,6 +41,7 @@
 				if (size == 1) {
 					for (k in carddata['sets']) {
 						$('#cardSet').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
+						$('#cardCareSet').hide();
 						setCurrentImage(k);
 					}
 				} else {
@@ -56,6 +57,7 @@
 							setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);
 						}
 					});
+					$('#cardCareSet').show();
 				}
 
 			}
@@ -72,6 +74,7 @@
 				if (size == 1) {
 					for (k in carddata['sets'][currentset]['cardimages']) {
 						$('#cardImage').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
+						$('#cardCareIllu').hide();
 					}
 				} else {
 					$('#cardImage').append('<select id="cardImageDropdown"></select>')
@@ -83,6 +86,7 @@
 						height : 500,
 						width : 300
 					});
+					$('#cardCareIllu').show();
 				}
 			}
 		</script>
@@ -107,12 +111,23 @@
 					<td class="ui-widget">
 						<input id="cardNameInput" />
 					</td>
-					<td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it (or hit enter)</a></td>
+					<td><a href="#" id="gatherCardButton">Fetch from Gatherer</a></td>
 				</tr>
 				<tr>
-					<td><div id="cardImage"></div></td>
-					<td><div id="cardAmount"></div></td>
-
+					<td rowspan="4" id="cardImage"></td>
+					<td id="cardAmount">Number: <input id="cardAmountInput" type="number"/></td>
+				</tr>
+				<tr>
+					<td id="cardFoil">Foil: <input id="cardFoilInput" type="checkbox"/></td>
+				</tr>
+				<tr>
+					<td id="cardAmount">Care which set: <input id="cardFoilInput" type="checkbox" checked="checked"/></td>
+				</tr>
+				<tr>
+					<td id="cardComment">Comment: <input id="cardCommentInput" type="text"/></td>
+				</tr>
+				<tr>
+					<td id="cardCareSet">I care which set: <input id="cardCareSetInput" type="checkbox" checked="checked"/></td>
 				</tr>
 			</table>
 			<div id="cardSet"></div>
