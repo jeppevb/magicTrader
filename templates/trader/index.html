@@ -90,7 +90,7 @@
 					<td class="ui-widget">
 						<input id="cardNameInput" />
 					</td>
-					<td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
+					<td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it (or hit enter)</a></td>
 				</tr>
 				<tr>
 					<td><div id="cardImage"></div></td>
@@ -122,14 +122,11 @@
 					});
 				},
 				response : function(event, ui) {
-					$("#cardNameInput").unbind('keypress');
-					if (ui.content.length < 1) {
-						$("#cardNameInput").keypress(function(event) {
-							if (event.which == 13) {
-								$("#gatherCardButton").click();
-							}
-						});
-					}
+					$("#cardNameInput").keypress(function(event) {
+						if (event.which == 13) {
+							$("#gatherCardButton").click();
+						}
+					});
 				},
 				select : function(event, ui) {
 					$.ajax({
@@ -159,6 +156,8 @@
 					$("#cardNameInput").autocomplete("search");
 				});
 			});
+			$("#gatherCardButton").button();
+			$("#cardNameInput").on( "autocompletefocus", function( event, ui ) {$("#cardNameInput").unbind('keypress');} );
 		</script>
 	</body>
 </html>
