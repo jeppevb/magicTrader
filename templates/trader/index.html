@@ -3,7 +3,7 @@
 	<head>
 		<meta />
 		<title>Magic Trade</title>
-		<link rel="stylesheet" href="{{STATIC_URL}}jqueryui/jquery-ui.css" />
+		<!-- <link rel="stylesheet" href="{{STATIC_URL}}jqueryui/jquery-ui.css" /> -->
 		<script src="{{STATIC_URL}}jquery-1.9.1.js"></script>
 		<script src="{{STATIC_URL}}jqueryui/jquery-ui.js"></script>
 		<script src="{{STATIC_URL}}jqueryui/jquery.ddslick.min.js"></script>
@@ -42,6 +42,7 @@
 					for (k in carddata['sets']) {
 						$('#cardSet').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
 						$('#cardCareSet').hide();
+						$('#cardCareSetInput').hide();
 						setCurrentImage(k);
 					}
 				} else {
@@ -58,6 +59,7 @@
 						}
 					});
 					$('#cardCareSet').show();
+					$('#cardCareSetInput').show();
 				}
 
 			}
@@ -111,7 +113,7 @@
 					<td class="ui-widget">
 						<input id="cardNameInput" />
 					</td>
-					<td><a href="#" id="gatherCardButton">Fetch from Gatherer</a></td>
+					<td colspan="2"><a href="#" id="gatherCardButton">Fetch from Gatherer</a></td>
 				</tr>
 				<tr>
 					<td rowspan="4" id="cardImage"></td>
@@ -120,8 +122,8 @@
 				<tr>
 					<td id="cardFoil"  style="text-align: right;">Foil:</td><td style="text-align: left;"><input id="cardFoilInput" type="checkbox"/></td>
 				</tr>
-				<tr>
-					<td id="cardCareIllu" style="text-align: right;">Care which illustration:</td><td style="text-align: left;"><input id="cardCareIlluInput" type="checkbox" checked="checked"/></td>
+				<tr id="cardCareIllu">
+					<td style="text-align: right;">Care which illustration:</td><td style="text-align: left;"><input id="cardCareIlluInput" type="checkbox" checked="checked"/></td>
 				</tr>
 				<tr>
 					<td id="cardComment" style="text-align: right;">Comment:</td><td style="text-align: left;"><input id="cardCommentInput" type="text"/></td>
