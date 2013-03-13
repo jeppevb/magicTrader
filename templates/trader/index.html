@@ -115,22 +115,21 @@
 				</tr>
 				<tr>
 					<td rowspan="4" id="cardImage"></td>
-					<td id="cardAmount">Number: <input id="cardAmountInput" type="number"/></td>
+					<td id="cardAmount" style="text-align: right;">Number:</td><td style="text-align: left;"><input id="cardAmountInput" type="number"/></td>
 				</tr>
 				<tr>
-					<td id="cardFoil">Foil: <input id="cardFoilInput" type="checkbox"/></td>
+					<td id="cardFoil"  style="text-align: right;">Foil:</td><td style="text-align: left;"><input id="cardFoilInput" type="checkbox"/></td>
 				</tr>
 				<tr>
-					<td id="cardAmount">Care which set: <input id="cardFoilInput" type="checkbox" checked="checked"/></td>
+					<td id="cardCareIllu" style="text-align: right;">Care which illustration:</td><td style="text-align: left;"><input id="cardCareIlluInput" type="checkbox" checked="checked"/></td>
 				</tr>
 				<tr>
-					<td id="cardComment">Comment: <input id="cardCommentInput" type="text"/></td>
+					<td id="cardComment" style="text-align: right;">Comment:</td><td style="text-align: left;"><input id="cardCommentInput" type="text"/></td>
 				</tr>
 				<tr>
-					<td id="cardCareSet">I care which set: <input id="cardCareSetInput" type="checkbox" checked="checked"/></td>
+					<td><div id="cardSet" /></td><td style="text-align: right;" id="cardCareSet">I care which set:</td><td style="text-align: left;"><input id="cardCareSetInput" type="checkbox" checked="checked"/></td>			
 				</tr>
 			</table>
-			<div id="cardSet"></div>
 			<div>
 				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
 			</div>
