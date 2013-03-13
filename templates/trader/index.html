@@ -10,122 +10,130 @@
 		<link href="{{STATIC_URL}}toastr/toastr.css" rel="stylesheet"/>
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
 		<style>
-			.dd-select, .dd-selected, .dd-options, .dd-selected-text{
+			.dd-select, .dd-selected, .dd-options, .dd-selected-text {
 				font-size: small;
 			}
-			.dd-selected-image{
+			.dd-selected-image {
 				max-width: 223px;
 			}
 			input {
 				width: 300px;
 			}
-			
+
 		</style>
 		<script type="application/javascript">
 			var carddata;
-			$(function() {
-				$("#cardNameInput").autocomplete({
-					source : function(request, response) {
-						$.ajax({
-							url : 'https://magictrader.kyomu.dk/cards/' + request.term,
-							dataType : 'json'
-						}).success(function(data) {
-							response(data);
-						});
-					},
-					response : function(event, ui) {
-						if (ui.content.length < 1) {
-							$("#cardNameInput").keypress(
-								function(event) {
-  									if ( event.which == 13 ) {
-  										$("#gatherCardButton").click();
-  									}
-  								}
-							);
-						}else{
-							$("#cardNameInput").unbind('keypress');
-						}
-					},
-					select: function( event, ui ) {
-						$('#gatherCardButton').hide(100);
-						$.ajax({
-							url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
-							dataType : 'json'
-						}).success(function(data){
-							carddata = data;
-							setCurrentSet();
-						});
-					},
-					change: function (event, ui){
-						$('#gatherCardButton').show(50);
-					}
-				});
-				$("#gatherCardButton").click(
-					function() {
-						var mycardname = $("#cardNameInput").val();
-						$.ajax({
-							url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
-							dataType : 'json',
-							statusCode : {
-								404 : function() {toastr.error("Unable to find/add " + mycardname);} 
+			$("#cardNameInput").autocomplete({
+				source : function(request, response) {
+					$.ajax({
+						url : 'https://magictrader.kyomu.dk/cards/' + request.term,
+						dataType : 'json'
+					}).success(function(data) {
+						response(data);
+					});
+				},
+				response : function(event, ui) {
+					if (ui.content.length < 1) {
+						$("#cardNameInput").keypress(function(event) {
+							if (event.which == 13) {
+								$("#gatherCardButton").click();
 							}
-						}).success(function(data){
-							toastr.success("Added " + data + " to database");
-							$("#cardNameInput" ).autocomplete("search");
 						});
+					} else {
+						$("#cardNameInput").unbind('keypress');
 					}
-				);
+				},
+				select : function(event, ui) {
+					$('#gatherCardButton').hide(100);
+					$.ajax({
+						url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
+						dataType : 'json'
+					}).success(function(data) {
+						carddata = data;
+						setCurrentSet();
+					});
+				},
+				change : function(event, ui) {
+					$('#gatherCardButton').show(50);
+				}
 			});
-			
-			function setCurrentSet(){
+
+			$("#gatherCardButton").click(function() {
+				var mycardname = $("#cardNameInput").val();
+				$.ajax({
+					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
+					dataType : 'json',
+					statusCode : {
+						404 : function() {
+							toastr.error("Unable to find/add " + mycardname);
+						},
+						302 : function() {
+						}
+					}
+				}).success(function(data) {
+					toastr.success("Added " + data + " to database");
+					$("#cardNameInput").autocomplete("search");
+				});
+			});
+
+			function setCurrentSet() {
 				$('#cardSet').empty();
 				var size = 0;
-				for(k in carddata['sets']){
-					if (carddata['sets'].hasOwnProperty(k)) size++;
+				for (k in carddata['sets']) {
+					if (carddata['sets'].hasOwnProperty(k))
+						size++;
 					if (size > 1)
-						break; 
+						break;
 				}
-				if (size == 1){
-					for(k in carddata['sets']){
+				if (size == 1) {
+					for (k in carddata['sets']) {
 						$('#cardSet').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
 						setCurrentImage(k);
 					}
-				}else{	
+				} else {
 					$('#cardSet').append('<select id="cardSetDropdown"></select>')
-					for(k in carddata['sets']){
+					for (k in carddata['sets']) {
 						$('#cardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
 					};
-					
-					$('#cardSetDropdown').ddslick({height: 500, width: 300, onSelected: function(){setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);}});
-				}
-				
-			}
-			
-			function setCurrentImage(currentset){
-				var size = 0;
-				$('#cardImage').empty();
-				for(k in carddata['sets'][currentset]['cardimages']){
-					if (carddata['sets'][currentset]['cardimages'].hasOwnProperty(k)) size++;
-					if (size > 1)
-						break; 
-				}
-				if (size == 1){
-					for(k in carddata['sets'][currentset]['cardimages']){
-						$('#cardImage').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
-					}
-				}else{	
-					$('#cardImage').append('<select id="cardImageDropdown"></select>')
-					for(k in carddata['sets'][currentset]['cardimages']){
-						console.log(k);
-						$('#cardImageDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></option>');
-					};
-					$('#cardImageDropdown').ddslick({height: 500, width: 300});
+
+					$('#cardSetDropdown').ddslick({
+						height : 500,
+						width : 300,
+						onSelected : function() {
+							setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);
+						}
+					});
 				}
 
 			}
-			
-			
-			
+
+			function setCurrentImage(currentset) {
+				var size = 0;
+				$('#cardImage').empty();
+				for (k in carddata['sets'][currentset]['cardimages']) {
+					if (carddata['sets'][currentset]['cardimages'].hasOwnProperty(k))
+						size++;
+					if (size > 1)
+						break;
+				}
+				if (size == 1) {
+					for (k in carddata['sets'][currentset]['cardimages']) {
+						$('#cardImage').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
+					}
+				} else {
+					$('#cardImage').append('<select id="cardImageDropdown"></select>')
+					for (k in carddata['sets'][currentset]['cardimages']) {
+						console.log(k);
+						$('#cardImageDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></option>');
+					};
+					$('#cardImageDropdown').ddslick({
+						height : 500,
+						width : 300
+					});
+				}
+
+			}
+
 		</script>
 	</head>
 	<body>
@@ -133,17 +141,21 @@
 			<h2>Trade Binder:</h2>
 			<table>
 				<tr>
-					<td colspan="2">
-					<div class="ui-widget"><input id="cardNameInput" /></div>
-					<div><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></div>					
-					</td>
+					<td>
+					<div class="ui-widget">
+						<input id="cardNameInput" />
+					</div></td><td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
+				</tr>
+				<tr>
+					<td><div id="cardImage"></div></td>
+					<td><div id="cardAmount"></div></td>
+
 				</tr>
 			</table>
-					<div id="cardImage"></div>
-					<div id="cardSet"></div>
-					<div id="cardAmount"></div>
-					<div id="cardFoil"></div>
-					<div><a onclick="addBinderCard()" href="#">Add card to trade binder</a></div>
+			<div id="cardSet"></div>
+			<div>
+				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
+			</div>
 		</div>
 		<hr />
 		<div>
