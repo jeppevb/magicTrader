@@ -22,7 +22,7 @@ def traderDispatcher(request, method = None, data = None):
             expectedSignature = hmac.new('cbf6e8d1d36a7a252dfd425c1610a868',rawdata,hashlib.sha256).digest()
             if signature != expectedSignature:
                 return HttpResponseNotFound('Wrong')
-        if method = 'updatebinder' && data != None:
+        if method == 'updatebinder' and data != None:
             updateBinder()
         return traderIndex(request, jsondata['user_id'])
     
