@@ -21,7 +21,37 @@
 			}
 
 		</style>
-		<script type="application/javascript">
+	</head>
+	<body>
+		<div>
+			<h2>Trade Binder:</h2>
+			<table>
+				<tr>
+					<td>
+					<div class="ui-widget">
+						<input id="cardNameInput" />
+					</div></td><td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
+				</tr>
+				<tr>
+					<td><div id="cardImage"></div></td>
+					<td><div id="cardAmount"></div></td>
+
+				</tr>
+			</table>
+			<div id="cardSet"></div>
+			<div>
+				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
+			</div>
+		</div>
+		<hr />
+		<div>
+			<h2>Communities:</h2>
+			<ul>
+				<li></li>
+			</ul>
+			<a href="#">Join community</a>
+		</div>
+		<script type="text/javascript">
 			var carddata;
 			$("#cardNameInput").autocomplete({
 				source : function(request, response) {
@@ -134,39 +164,6 @@
 
 			}
 
-		</script>
-	</head>
-	<body>
-		<div>
-			<h2>Trade Binder:</h2>
-			<table>
-				<tr>
-					<td>
-					<div class="ui-widget">
-						<input id="cardNameInput" />
-					</div></td><td><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></td>
-				</tr>
-				<tr>
-					<td><div id="cardImage"></div></td>
-					<td><div id="cardAmount"></div></td>
-
-				</tr>
-			</table>
-			<div id="cardSet"></div>
-			<div>
-				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
-			</div>
-		</div>
-		<hr />
-		<div>
-			<h2>Communities:</h2>
-			<ul>
-				<li></li>
-			</ul>
-			<a href="#">Join community</a>
-		</div>
-		<script type="application/javascript">
-			//$("#addBinderCardButton").hide(0);
 		</script>
 	</body>
 </html>
