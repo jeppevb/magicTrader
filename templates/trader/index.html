@@ -11,7 +11,7 @@
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
 		<script type="text/javascript">
 			var carddata;
-			
+			var signed_request = "{{request.POST['signed_request']}}";
 			function gatherCard() {
 				var mycardname = $("#cardNameInput").val();
 				$.ajax({
@@ -52,7 +52,7 @@
 					};
 
 					$('#cardSetDropdown').ddslick({
-						height : 500,
+						height : 400,
 						width : 300,
 						onSelected : function() {
 							setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);
@@ -86,7 +86,7 @@
 						$('#cardImageDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></option>');
 					};
 					$('#cardImageDropdown').ddslick({
-						height : 500,
+						height : 400,
 						width : 300
 					});
 					$('#cardCareIllu').show();

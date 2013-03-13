@@ -7,7 +7,7 @@ from models import Trader, BinderCard, WishListCard, Card
 from django.views.decorators.csrf import csrf_exempt                                          
 
 @csrf_exempt
-def traderDispatcher(request):
+def traderDispatcher(request, method = None):
     if request.method == 'GET':
         return HttpResponse(u'<script type="text/javascript">window.top.location.href = "https://www.facebook.com/dialog/oauth?client_id=213751205416235&redirect_uri=https://apps.facebook.com/magictrade";</script>')            
     elif request.method == 'POST':
@@ -30,7 +30,8 @@ def traderIndex(request, userid):
         t = Trader(fbuserid=userid)
         t.save()
     trader = Trader.objects.get(fbuserid=userid)
-    return HttpResponse(template.render(RequestContext(request)))
+    rq = RequestContext(request, {'trader':t.id})
+    return HttpResponse(template.render(rq))
     
 def traderGet(request, userid, entity):
     if entity == 'binder':
