@@ -12,6 +12,23 @@
 		<script type="text/javascript">
 			var carddata;
 			
+			function gatherCard() {
+				var mycardname = $("#cardNameInput").val();
+				$.ajax({
+					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
+					dataType : 'json',
+					statusCode : {
+						404 : function() {
+							toastr.error("Unable to find/add " + mycardname);
+						},
+						302 : function() {}
+					}
+				}).success(function(data) {
+					toastr.success("Added " + data + " to database");
+					$("#cardNameInput").autocomplete("search");
+				});
+			}
+			
 			function setCurrentSet() {
 				$('#cardSet').empty();
 				var size = 0;
@@ -139,23 +156,7 @@
 				}
 			});
 
-			$("#gatherCardButton").click(function() {
-				var mycardname = $("#cardNameInput").val();
-				$.ajax({
-					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
-					dataType : 'json',
-					statusCode : {
-						404 : function() {
-							toastr.error("Unable to find/add " + mycardname);
-						},
-						302 : function() {
-						}
-					}
-				}).success(function(data) {
-					toastr.success("Added " + data + " to database");
-					$("#cardNameInput").autocomplete("search");
-				});
-			});
+			$("#gatherCardButton").click(gatherCard);
 			$("#gatherCardButton").button();
 			$("#cardNameInput").on( "autocompletefocus", function( event, ui ) {$("#cardNameInput").unbind('keypress');} );
 		</script>
