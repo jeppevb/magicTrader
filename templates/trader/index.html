@@ -35,7 +35,15 @@
 					},
 					response : function(event, ui) {
 						if (ui.content.length < 1) {
-							//if nothing came back do this
+							$("#cardNameInput").keypress(
+								function(event) {
+  									if ( event.which == 13 ) {
+  										$("#gatherCardButton").click();
+  									}
+  								}
+							);
+						}else{
+							$("#cardNameInput").unbind('keypress');
 						}
 					},
 					select: function( event, ui ) {
@@ -79,7 +87,7 @@
 				}
 				if (size == 1){
 					for(k in carddata['sets']){
-						$('#cardSet').append('<div style="width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
+						$('#cardSet').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg"><label class="dd-selected-text" style="line-height: 40px;">' + k + '</label></span></div>');
 						setCurrentImage(k);
 					}
 				}else{	
@@ -87,6 +95,7 @@
 					for(k in carddata['sets']){
 						$('#cardSetDropdown').append('<option value="' + k + '" data-imagesrc="{{MEDIA_URL}}sets/' + carddata['sets'][k]['short'] + '.jpg">' + k + '</option>');
 					};
+					
 					$('#cardSetDropdown').ddslick({height: 500, width: 300, onSelected: function(){setCurrentImage($('#cardSetDropdown').data('ddslick').selectedData.value);}});
 				}
 				
@@ -102,7 +111,7 @@
 				}
 				if (size == 1){
 					for(k in carddata['sets'][currentset]['cardimages']){
-						$('#cardImage').append('<div class="dd-select" style="width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
+						$('#cardImage').append('<div class="dd-select" style="cursor: default; width: 300px; background-color: rgb(238, 238, 238); background-position: initial initial; background-repeat: initial initial;"><span class="dd-selected"><img class="dd-selected-image" src="{{MEDIA_URL}}cards/' + carddata['sets'][currentset]['cardimages'][k] + '.jpg"></span></div>');
 					}
 				}else{	
 					$('#cardImage').append('<select id="cardImageDropdown"></select>')
@@ -122,8 +131,14 @@
 	<body>
 		<div>
 			<h2>Trade Binder:</h2>
+			<table>
+				<tr>
+					<td colspan="2">
 					<div class="ui-widget"><input id="cardNameInput" /></div>
-					<div><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></div>
+					<div><a href="#" id="gatherCardButton">Find this card on gather so i can trade it</a></div>					
+					</td>
+				</tr>
+			</table>
 					<div id="cardImage"></div>
 					<div id="cardSet"></div>
 					<div id="cardAmount"></div>
