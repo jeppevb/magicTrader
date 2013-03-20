@@ -11,7 +11,7 @@
 		<script src="{{STATIC_URL}}toastr/toastr.js"></script>
 		<script type="text/javascript">
 			var carddata;
-			var signed_request = "{{request.signed_request}}";
+			var magicstring = "{{magicstring}}";
 			function gatherCard() {
 				var mycardname = $("#cardNameInput").val();
 				$.ajax({
