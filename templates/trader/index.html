@@ -12,10 +12,15 @@
 		<script type="text/javascript">
 			var carddata;
 			var magicstring = "{{magicstring}}";
+
+            function addToBinder() {
+
+            }
+
 			function gatherCard() {
 				var mycardname = $("#cardNameInput").val();
 				$.ajax({
-					url : 'https://magictrader.kyomu.dk/gathercard/' + $("#cardNameInput").val(),
+					url : '/gathercard/' + $("#cardNameInput").val(),
 					dataType : 'json',
 					statusCode : {
 						404 : function() {
@@ -150,7 +155,7 @@
 			$("#cardNameInput").autocomplete({
 				source : function(request, response) {
 					$.ajax({
-						url : 'https://magictrader.kyomu.dk/cards/' + request.term,
+						url : '/cards/' + request.term,
 						dataType : 'json'
 					}).done(function(data) {
 						response(data);
@@ -161,7 +166,7 @@
 				},
 				select : function(event, ui) {
 					$.ajax({
-						url : 'https://magictrader.kyomu.dk/card/' + ui.item.value,
+						url : '/card/' + ui.item.value,
 						dataType : 'json'
 					}).done(function(data) {
 						carddata = data;
