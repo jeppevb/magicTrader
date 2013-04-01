@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.template import RequestContext, loader
 import base64,urllib,hmac,hashlib
 import json as JSON
-from models import Trader, BinderCard, WishListCard, Card
+from models import Trader, BinderCard, WishListCard, Card, Set, CardSetImage
 
 from django.views.decorators.csrf import csrf_exempt                                          
 
@@ -39,7 +39,7 @@ def update(request, sig, data):
         return HttpResponseNotFound()
     else:
         jsondata = JSON.loads(base64.urlsafe_b64decode((data).encode("utf-8")))
-        if jsondata['method'] == 'addBinder':
+        if jsondata['method'] == 'addToBinder':
             _trader = Trader.objects.get(fbuserid=user)
             _card = Card.objects.get(name=jsondata['cardname'])
             _amount = jsondata['amount']
@@ -54,9 +54,22 @@ def update(request, sig, data):
                 _preferedimage = None
             _comment = jsondata['comment']
             BinderCard.objects.create(trader=_trader, card=_card, amount=_amount, isFoil=_isFoil, preferedset=_preferedset, preferedimage=_preferedimage, comment=_comment)
-        
-    
-    
+        elif jsondata['method'] == 'addToWishlist':
+            _trader = Trader.objects.get(fbuserid=user)
+            _card = Card.objects.get(name=jsondata['cardname'])
+            _amount = jsondata['amount']
+            _isFoil = jsondata['foil']
+            if jsondata['careSet']:
+                _preferedset = Set.objects.get(name=jsondata['set'])
+            else:
+                _preferedset = None
+            if jsondata['careIllu']:
+                _preferedimage = CardSetImage.objects.get(cardid=jsondata['image'])
+            else:
+                _preferedimage = None
+            _comment = jsondata['comment']
+            WishListCard.objects.create(trader=_trader, card=_card, amount=_amount, isFoil=_isFoil, preferedset=_preferedset, preferedimage=_preferedimage, comment=_comment)
+
 def traderIndex(request, userid):
     template = loader.get_template('trader/index.html')
     if Trader.objects.filter(fbuserid=userid).count() < 1:
