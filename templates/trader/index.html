@@ -93,6 +93,14 @@
 					$('#cardImage').attr('rowspan', 4);
 				}
 			}
+
+            function addBinderCard() {
+                validateInputFields();
+            }
+
+            function validateInputFields() {
+
+            }
 		</script>
 		<style>
 			.dd-select, .dd-selected, .dd-options, .dd-selected-text {
@@ -113,7 +121,7 @@
 			<table>
 				<tr>
 					<td class="ui-widget">
-						<input id="cardNameInput" />
+						<input id="cardNameInput" /><input id="hiddenCardName" type="hidden">
 					</td>
 					<td colspan="2"><a href="#" id="gatherCardButton">Fetch from Gatherer</a></td>
 				</tr>
@@ -127,15 +135,15 @@
 				<tr id="cardCareIllu">
 					<td style="text-align: right;">Care which illustration:</td><td style="text-align: left;"><input id="cardCareIlluInput" type="checkbox" checked="checked"/></td>
 				</tr>
-				<tr>
+                <tr>
+                    <td><div id="cardSet" /></td><td style="text-align: right;" id="cardCareSet">I care which set:</td><td style="text-align: left;"><input id="cardCareSetInput" type="checkbox" checked="checked"/></td>
+                </tr>
+                <tr>
 					<td id="cardComment" style="text-align: right;">Comment:</td><td style="text-align: left;"><input id="cardCommentInput" type="text"/></td>
-				</tr>
-				<tr>
-					<td><div id="cardSet" /></td><td style="text-align: right;" id="cardCareSet">I care which set:</td><td style="text-align: left;"><input id="cardCareSetInput" type="checkbox" checked="checked"/></td>			
 				</tr>
 			</table>
 			<div>
-				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>
+				<a onclick="addBinderCard()" href="#">Add card to trade binder</a>&nbsp;<a onclick="addWishListCard()" href="#">Add card to trade wish list</a>
 			</div>
 		</div>
 		<hr />
