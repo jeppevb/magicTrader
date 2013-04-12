@@ -101,6 +101,27 @@
 
             function addBinderCard() {
                 validateInputFields();
+                var cardMap = new Object();
+
+                cardMap['method'] = "addToBinder";
+                cardMap['cardname'] = $("#hiddenCardName").val();
+                cardMap['amount'] = $("#cardAmountInput").val();
+                cardMap['foil'] = $("#cardFoilInput").val();
+                cardMap['careSet'] = $("#cardCareSetInput").val();
+                cardMap['set'] = $('#cardSetDropdown').data('ddslick').selectedData.value;
+                cardMap['careIllu'] = $("#cardCareIlluInput").val();
+                cardMap['image'] = $("#cardIlluInput").val();
+                cardMap['comment'] = $("#cardCommentInput").val();
+
+                var encodedData = urlencode64(jsonify(cardMap));
+
+                $.ajax({
+                    url : '/update/' + magicstring + '/' + encodedData,
+                    dataType : 'json'
+                }).done(function(data) {
+                            toastr.success("Card added to binder", "Card added")
+                        });
+
             }
 
             function validateInputFields() {
@@ -126,7 +147,7 @@
 			<table>
 				<tr>
 					<td class="ui-widget">
-						<input id="cardNameInput" /><input id="hiddenCardName" type="hidden">
+						<input id="cardNameInput" /><input id="hiddenCardName" type="hidden" />
 					</td>
 					<td colspan="2"><a href="#" id="gatherCardButton">Fetch from Gatherer</a></td>
 				</tr>
